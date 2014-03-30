@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dashboard Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for("static", filename="css/dashboard.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/custom.css") }}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Overview</a></li>
+            <li><a href="#">Reports</a></li>
+            <li><a href="#">Analytics</a></li>
+            <li><a href="#">Export</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="">Nav item</a></li>
+            <li><a href="">Nav item again</a></li>
+            <li><a href="">One more nav</a></li>
+            <li><a href="">Another nav item</a></li>
+            <li><a href="">More navigation</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="">Nav item again</a></li>
+            <li><a href="">One more nav</a></li>
+            <li><a href="">Another nav item</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header"> Processe seu sinal </h1>
+
+            <h2> Envie o Arquivo </h2>
+            <form role="form" enctype="multipart/form-data"
+                action="{{ url_for("process_function") }}" method="POST"
+                id="form-process">
+                Arquivo de dados: <input type="file" name="userfile" />
+                <input class="btn btn-default" type="submit" value="Processar dados" />
+            </form>
+            <div class="hide" id="div-spinner">
+                <img src="{{ url_for('static', filename='images/spinner.gif') }}" alt="loading..." />
+            </div>
+            <div id="div-status"></div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <table>
+               <tr>
+                <td><h2 id="tachTitle"> Tacograma </h2>
+                <div id="signal"></div></td>
+                </tr>
+                <tr>
+               <td> <h2 id="psdTitle"> Espectro de Frequência </h2>
+                <div id="grafico"></div>
+               <td></tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <h2> Índices </h2>
+                <div class="table-responsive">
+                  <table class="table table-striped" id="data">
+                    <thead>
+                      <tr>
+                        <th> Índice </th>
+                        <th> Valor </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td> Média </td>
+                        <td id="data-media"></td>
+                      </tr>
+                      <tr>
+                        <td> SDNN </td>
+                        <td id="data-sdnn"></td>
+                      </tr>
+                      <tr>
+                        <td> RMSSD </td>
+                        <td id="data-rmssd"></td>
+                      </tr>
+                      <tr>
+                        <td> VLF </td>
+                        <td id="data-vlf"></td>
+                      </tr>
+                      <tr>
+                        <td> LF </td>
+                        <td id="data-lf"></td>
+                      </tr>
+                      <tr>
+                        <td> HF </td>
+                        <td id="data-hf"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ url_for("static", filename="js/jquery.min.js") }}"></script>
+    <script src="{{ url_for("static", filename="js/bootstrap.min.js") }}"></script>
+    <script src="{{ url_for("static", filename="js/jquery.form.js") }}"></script>
+    <script src="{{ url_for("static", filename="js/jquery.flot.js") }}"></script>
+
+    <script src="{{ url_for("static", filename="js/jquery.flot.axislabels.js") }}"></script>
+    <script src="{{ url_for("static", filename="js/jquery.flot.time.js") }}"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var myForm = $('#form-process');
+//                $("#psdTitle").hide();
+//              $("#tachTitle").hide();
+            myForm.submit(function(){
+                $('#div-spinner').removeClass('hide');
+                $('#grafico').hide();
+                $('#div-status').hide();
+            });
+
+
+            myForm.ajaxForm(function(response){
+                $('#div-spinner').addClass('hide');
+                $('#div-status').html('Processadas ' + response.linhas + ' linhas.');
+
+                var dataIndice = response.indices;
+                $('#data-media').html(dataIndice['data-media']);
+                $('#data-sdnn').html(dataIndice['data-sdnn']);
+                $('#data-rmssd').html(dataIndice['data-rmssd']);
+
+                $('#data-vlf').html(dataIndice['data-vlf']);
+                $('#data-lf').html(dataIndice['data-lf']);
+                $('#data-hf').html(dataIndice['data-hf']);
+
+                $("#psdTitle").css("visibility","visible");
+                $("#tachTitle").css("visibility","visible");
+
+                var options = {
+                         xaxis: {
+                            axisLabel: "Time (s)",
+                            axisLabelUseCanvas: true,
+                            axisLabelFontSizePixels: 12,
+                            axisLabelPadding: 20,
+                            axisLabelFontFamily: 'Verdana, Arial'
+                                 },
+                         yaxis: {
+                            color: "black",
+                            axisLabel: "RRi (ms)",
+                            axisLabelUseCanvas: true,
+                            axisLabelFontSizePixels: 12,
+                            axisLabelFontFamily: 'Verdana, Arial',
+                            axisLabelPadding: 5
+                                },
+                         colors:["blue"]};
+
+                $('#div-status').show();
+                $.plot("#signal", [response.signal], options);
+                $("#signal").show(1500);
+                $.plot('#grafico', [response.data]);
+                $('#grafico').show({duration: 1500});
+            });
+        });
+    </script>
+  </body>
+  </html>

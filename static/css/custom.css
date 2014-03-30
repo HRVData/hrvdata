@@ -1,0 +1,17 @@
+#grafico {
+    display: none;
+    width: 400px;
+    height: 300px;
+}
+
+#signal {
+    display: none;
+    width: 400px;
+    height: 300px;
+}
+#psdTitle {
+visibility:hidden;
+}
+#tachTitle {
+visibility:hidden;
+}
